@@ -1,0 +1,95 @@
+<!doctype html>
+<html>
+
+
+<head>
+    <title>CS180 Final Project</title>
+    <style>
+        th,
+        td {
+            padding: 15px;
+        }
+
+        table,
+        th,
+        td {
+            border: 1px solid black;
+            border-collapse: collapse;
+        }
+
+        body {
+            padding: 5vw;
+        }
+
+        img {
+            max-width: 70vw;
+        }
+
+        hr {
+            margin-top: 10vh;
+            margin-bottom: 5vh;
+        }
+
+        h2,
+        h3,
+        h4 {
+            padding-top: 3rem;
+        }
+    </style>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=default'></script>
+
+</head>
+
+<body>
+    <h1>CS Final Project</h1>
+    <b>Carolyn Wang</b>
+    <hr>
+
+    <h1>Final Project 1: A Neural Algorithm of Artistic Style</h1>
+
+
+    <h2>1. Shoot and digitize pictures</h2>
+    <p>I started off with these two photos:</p>
+    <div style="flex-direction: row;">
+        <img src="images/im_left.jpeg" style="height: 40vh;">
+        <img src="images/im_right.jpeg" style="height: 40vh;">
+    </div>
+    <h2>2. Recover homographies</h2>
+
+    <img src="images/room_warped_grid.jpeg">
+
+
+    <h1>Final Project 2: Image Quilting</h1>
+
+    <h2>Method 1: Randomly Sampled Texture</h2>
+    <p>out_size = 200</p>
+    <p>patch_size = 15</p>
+
+    <h4>Original Image</h4>
+    <img src="proj2/images/method1/method_1_original.jpeg">
+    <h4>Random Generation Run 1</h4>
+    <img src="proj2/images/method1/method_1_sample_1.jpeg">
+    <h4>Random Generation Run 2</h4>
+    <img src="proj2/images/method1/method_1_sample_2.jpeg">
+
+    <h2>Method 2: Overlapping Patches</h2>
+    <p>out_size = 300</p> 
+    <p>patch_size = 55</p>
+    <p>overlap = 10</p>
+
+    <h4>Original Image</h4>
+    <img src="proj2/images/method1/method_1_original.jpeg" >
+    <h4>tol = 1</h4>
+    <img src="proj2/images/method2/method_2_to1_1.jpeg" >
+    <h4>tol = 2</h4>
+    <img src="proj2/images/method2/method_2_to1_2.jpeg">
+    <h4>tol = 5</h4>
+    <img src="proj2/images/method2/method_2_to1_5.jpeg">
+    <h4>tol = 10</h4>
+    <img src="proj2/images/method2/method_2_to1_10.jpeg">
+    <h4>tol = 15</h4>
+    <img src="proj2/images/method2/method_2_to1_15.jpeg">
+
+</body>
+
+</html>
