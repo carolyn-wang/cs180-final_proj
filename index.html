@@ -22,7 +22,7 @@
         }
 
         img {
-            max-width: 70vw;
+            max-width: 50vw;
         }
 
         hr {
@@ -47,21 +47,20 @@
 
     <h1>Final Project 1: A Neural Algorithm of Artistic Style</h1>
 
-
-    <h2>1. Shoot and digitize pictures</h2>
-    <p>I started off with these two photos:</p>
     <div style="flex-direction: row;">
         <img src="images/im_left.jpeg" style="height: 40vh;">
         <img src="images/im_right.jpeg" style="height: 40vh;">
     </div>
-    <h2>2. Recover homographies</h2>
-
-    <img src="images/room_warped_grid.jpeg">
 
 
     <h1>Final Project 2: Image Quilting</h1>
 
     <h2>Method 1: Randomly Sampled Texture</h2>
+    <p>First I created a function that randomly samples and stitches together
+        square patches of size patch_size. This is the simplest method but the results
+        are suboptimal.</p>
+    <br>
+    <p>Below are sample images from two runs of this method.</p>
     <p>out_size = 200</p>
     <p>patch_size = 15</p>
 
@@ -73,23 +72,153 @@
     <img src="proj2/images/method1/method_1_sample_2.jpeg">
 
     <h2>Method 2: Overlapping Patches</h2>
-    <p>out_size = 300</p> 
-    <p>patch_size = 55</p>
-    <p>overlap = 10</p>
+    <p>The quilt_simple function improves on the randomly
+        sampled texture by overlaying patches that have the lowest SSD cost for the overlapping regions
+        of the patches.</p>
+    <p>I created a template for the part of the output image to be filled in, a mask for the overlapping regions
+        between the next patch and previous patch, then calculated this SSD for all possible random patches that
+        could fill in this next part of the output image. </p>
+    <p>The best aligned image has the lowest cost. The tol variable dictates how much randomness to add when selecting
+        the next patch. If tol=3, one of the three lowest cost patches will be chosen.</p>
+
+    <br>
+    <p>Here are some outputs for the quilt_simple() method on a brick wall texture, run with varying tol values.</p>
+    <br>
+    <p>out_size = 300</p>
+    <p>patch_size = 50</p>
+    <p>overlap = 20</p>
 
     <h4>Original Image</h4>
-    <img src="proj2/images/method1/method_1_original.jpeg" >
-    <h4>tol = 1</h4>
-    <img src="proj2/images/method2/method_2_to1_1.jpeg" >
-    <h4>tol = 2</h4>
-    <img src="proj2/images/method2/method_2_to1_2.jpeg">
+    <img src="proj2/images/method1/method_1_original.jpeg">
     <h4>tol = 5</h4>
-    <img src="proj2/images/method2/method_2_to1_5.jpeg">
+    <img src="proj2/images/method2/method_2_tol_5.jpeg">
     <h4>tol = 10</h4>
-    <img src="proj2/images/method2/method_2_to1_10.jpeg">
+    <img src="proj2/images/method2/method_2_tol_10.jpeg">
     <h4>tol = 15</h4>
-    <img src="proj2/images/method2/method_2_to1_15.jpeg">
+    <img src="proj2/images/method2/method_2_tol_15.jpeg">
 
+
+    <h2>Method 3: Seam Finding</h2>
+    <p>Next, the quilt_cut function incorportes seam finding by calculating the min-cost contiguous path.
+        The given cut function identifies a path through the overlapping image patch that has the lowest
+        cost in terms of image difference.
+    </p>
+    <p>Then I applied this mask to patches before blending the patches together. This creates a seamless effect that
+        makes the boundaries less noticable.</p>
+    <p>Here are some outputs for the quilt_cut() method on a brick wall texture, one again run with varying tol values.
+    </p>
+    <br>
+    <p>out_size = 300</p>
+    <p>patch_size = 50</p>
+    <p>overlap = 20</p>
+
+    <h4>Brick: Original Image</h4>
+    <img src="proj2/images/method3/method_3_orig_brick.jpeg">
+    <h4>tol = 3</h4>
+    <img src="proj2/images/method3/method3_brick_tol3.jpeg">
+    <h4>tol = 5</h4>
+    <img src="proj2/images/method3/method_3_brick_tol5.jpeg">
+    <br>
+    <h3>Comparison</h3>
+    <p>Here is a comparison that shows the improvements in seam blending with quilt_cut compared to quilt_simple.</p>
+    <p><b>Method 2 Quilt Simple (left) vs. Method 3 Quilt Cut (right)</b></p>
+    <p>out_size = 300</p>
+    <p>patch_size = 50</p>
+    <p>overlap = 20</p>
+    <p>tol = 5</p>
+    <div style="flex-direction: row;">
+        <img src="proj2/images/method2/method_2_tol_5.jpeg" style="height: 40vw;">
+        <img src="proj2/images/method3/method_3_brick_tol5.jpeg" style="height: 40vw;">
+    </div>
+    <br>
+    <h4>Yarn: Original Image</h4>
+    <p>out_size = 300</p>
+    <p>patch_size = 50</p>
+    <p>overlap = 20</p>
+    <img src="proj2/images/method3/method_3_orig_yarn.jpeg">
+
+    <h4>tol = 3 </h4>
+    <img src="proj2/images/method3/method_3_yarn_tol3.jpeg">
+
+    <h4>tol = 5</h4>
+    <img src="proj2/images/method3/method_3_yarn_tol5.jpeg">
+
+    <h4>tol = 3, out_size = 600</h4>
+    <img src="proj2/images/method3/method3_yarn_large.jpeg">
+
+
+
+    <h2>Method 4: Texture Transfer</h2>
+
+    <p>Finally, I provide a guidance image to demonstrate texture transferring. This involves adding an
+        additional cost term between the guidance image and texture image to find patches in the texture image
+        that best match the corresponding guidance image patch in respect to both shape and intensity.
+    </p>
+    <p>
+        For each new patch, I added a guidance_ssd_matrix on top of the ssd_matrix (both weighted by 1-alpha and alpha
+        respectively).
+        Specifically, the guidance_ssd_matrix is another weighted cost term that calculates the ssd between the
+        grayscale version of the texture and guidance image (used for matching shape), and the grayscaled blurred
+        version of the images (used for matching intensity).
+    </p>
+
+    <h3>Guidance Image (left): feynman.tiff -- Texture Image (right): white_small.jpg</h3>
+
+    <div style="flex-direction: row;">
+        <img src="proj2/images/method4/feynman_orig.jpeg" style="height: 40vh;">
+        <img src="proj2/images/method4/white_small.jpeg" style="height: 40vh;">
+    </div>
+
+    <p>To match textures, I compared patches of grayscale blurred images and also grayscale original images</p>
+    <p>Grayscale and blurred images used for guidance image feature matching. Blurred with gaussian filter (sigma = 3).
+    </p>
+    <div style="flex-direction: row;">
+        <img src="proj2/images/method4/feynman_blur.jpeg" style="height: 40vh;">
+        <img src="proj2/images/method4/white_small_blur.jpeg" style="height: 40vh;">
+    </div>
+    <p><b>Output: Yogurt texture transfered to Feynman<b></p>
+    <p>patch_size = 20</p>
+    <p>overlap = 2</p>
+    <p>alpha = 0.1</p>
+    <p>tol = 1</p>
+    <img src="proj2/images/method4/white_small_feynman.jpeg" style="height: 40vh;">
+
+    <h3>Guidance Image (left): feynman.tiff -- Texture Image (right): sketch.tiff</h3>
+
+    <div style="flex-direction: row;">
+        <img src="proj2/images/method4/feynman_orig.jpeg" style="height: 40vh;">
+        <img src="proj2/images/method4/sketch_orig.jpeg" style="height: 40vh;">
+    </div>
+
+    <div style="flex-direction: row;">
+        <img src="proj2/images/method4/feynman_blur.jpeg" style="height: 40vh;">
+        <img src="proj2/images/method4/sketch_blur.jpeg" style="height: 40vh;">
+    </div>
+    <p><b>Output: Sketch texture transfered to Feynman<b></p>
+    <p>patch_size = 15</p>
+    <p>overlap = 4</p>
+    <p>alpha = 0.1</p>
+    <p>tol = 1</p>
+    <img src="proj2/images/method4/feynman_sketch_transfer.jpeg" style="height: 40vh;">
+
+    <br>
+    <h3>Guidance Image (left): monroe.jpeg -- Texture Image (right): starry_night.jpeg</h3>
+
+    <div style="flex-direction: row;">
+        <img src="proj2/images/method4/marilyn_orig.jpeg" style="height: 40vh;">
+        <img src="proj2/images/method4/starry_night_orig.jpeg" style="height: 40vh;">
+    </div>
+
+    <div style="flex-direction: row;">
+        <img src="proj2/images/method4/marilyn_monroe_grey.jpeg" style="height: 40vh;">
+        <img src="proj2/images/method4/starry_night_grey.jpeg" style="height: 40vh;">
+    </div>
+    <p><b>Output: Starry Night texture transfered to Marilyn Monroe<b></p>
+    <p>patch_size = 30</p>
+    <p>overlap = 6</p>
+    <p>alpha = 0.1</p>
+    <p>tol = 1</p>
+    <img src="proj2/images/method4/marilyn_starry_blend.jpeg" style="height: 40vh;">
 </body>
 
 </html>
