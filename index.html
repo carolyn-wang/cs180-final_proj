@@ -41,13 +41,44 @@
 </head>
 
 <body>
-    <h1>CS Final Project</h1>
-    <b>Carolyn Wang</b>
+    <h1>CS180 Final Project</h1>
+    <h3>Carolyn Wang</h3>
     <hr>
 
     <h1>Final Project 1: A Neural Algorithm of Artistic Style</h1>
 
+    <h2>Model design</h2>
+    <p>I started by loading in the style and content images as tensorflow variables.</p>
+    <div style="flex-direction: row;">
+        <img src="proj1/images/cat_old.jpeg" style="height: 15vw;">
+        <img src="proj1/images/star_old.jpeg" style="height: 15vw;">
+    </div>
+    <br>
+    <p>Following the paper, I retrieved style layers and content layers from the pretrained VGG19 ImageNet model.
+        The paper said that their model achieved slightly better results by using average pooling instead of max
+        pooling,
+        so I added this parameter when retreiving the model layers.</p>
+    <p><i>Style Layers: ['block1_conv1', 'block2_conv1', 'block3_conv1', 'block4_conv1', 'block5_conv1']</i></p>
+    <p><i>Content Layers: ['block1_conv1', 'block2_conv1', 'block3_conv1']</i></p>
+    <br>
+    <p>Then, I created an ArtisticCNN class that inherited from tf.keras.models.Model. This model stores the
+        style_outputs (with each value multiplied by the gram matrix) and content_outputs. These values are later
+        compared during training to style_targets, which is the style outputs of an ArtisticCNN model that is only
+        trained on the style image, and content_targets, which is the content_outputs of an ArtisticCNN trained only on
+        the content image.</p>
+    <br>
+    <p>The style loss and content loss are calculated and normalized separately, then added together to create total
+        loss.</p>
+
+    <p>Additionally, I used an Adam optimizer. The paper suggests setting the ratio between the style weight and content
+        weight to \(10^{-3}\) for optimal results. <br>My final outputs used a smaller ratio of \(10^{-5}\) (style_weight = \(10^{-2}\), content_weight = \(10^{3}\)) </p>
+
     <h2>Initial failed attempts</h2>
+    <p>Here are some initial failed training attempts</p>
+
+    <p><i>Training Epochs: 7</i></p>
+    <p><i>Steps per Epoch: 100</i></p>
+
     <div style="flex-direction: row;">
         <img src="proj1/images/cat_old.jpeg" style="height: 15vw;">
         <img src="proj1/images/star_old.jpeg" style="height: 15vw;">
@@ -78,6 +109,12 @@
         <img src="proj1/images/style_content_/training_starry_cat_7.png" style="height: 15vw;">
     </div>
 
+
+    <h2>Final Results</h2>
+    <p><i>style_weight = \(10^{-2}\) <br> content_weight = \(10^{3}\)</i></p>
+    <p><i>Training Epochs: 20</i></p>
+    <p><i>Steps per Epoch: 50</i></p>
+    <p><i>Learning Rate: 0.2</i></p>
 
     <h3>Original Image (left): cat.jpeg -- Style Image (right): starry_night.jpg</h3>
     <div style="flex-direction: row;">
@@ -110,7 +147,7 @@
     </div>
 
     <h4>Final Result</h4>
-    <img src="proj1/images/cat_starry_night/cat_epoch19.jpeg" style="width: 50vw" >
+    <img src="proj1/images/cat_starry_night/cat_epoch19.jpeg" style="width: 40vw">
 
     <br>
 
@@ -139,7 +176,42 @@
     </div>
 
     <h4>Final Result</h4>
-    <img src="proj1/images/cat_klimt/cat_klimt_epoch13.jpeg" style="width: 50vw" >
+    <img src="proj1/images/cat_klimt/cat_klimt_epoch13.jpeg" style="width: 40vw">
+
+
+    <h3>Original Image (left): marilyn_monroe.jpeg -- Style Image (right): starry_night.jpeg</h3>
+    <div style="flex-direction: row;">
+        <img src="proj1/images/marilyn_monroe_orig.jpeg" style="height: 15vw;">
+        <img src="proj1/images/starry_night_orig.jpeg" style="height: 15vw;">
+    </div>
+
+    <h4>Training Process</h4>
+    <div style="flex-direction: row;">
+        <img src="proj1/images/marilyn_monroe_orig.jpeg" style="height: 20vw;">
+        <img src="proj1/images/marilyn_starry/marilyn_starry_epoch1.jpeg" style="height: 20vw;">
+        <img src="proj1/images/marilyn_starry/marilyn_starry_epoch2.jpeg" style="height: 20vw;">
+        <img src="proj1/images/marilyn_starry/marilyn_starry_epoch3.jpeg" style="height: 20vw;">
+        <img src="proj1/images/marilyn_starry/marilyn_starry_epoch4.jpeg" style="height: 20vw;">
+        <img src="proj1/images/marilyn_starry/marilyn_starry_epoch5.jpeg" style="height: 20vw;">
+        <img src="proj1/images/marilyn_starry/marilyn_starry_epoch6.jpeg" style="height: 20vw;">
+        <img src="proj1/images/marilyn_starry/marilyn_starry_epoch7.jpeg" style="height: 20vw;">
+        <img src="proj1/images/marilyn_starry/marilyn_starry_epoch8.jpeg" style="height: 20vw;">
+        <img src="proj1/images/marilyn_starry/marilyn_starry_epoch9.jpeg" style="height: 20vw;">
+        <img src="proj1/images/marilyn_starry/marilyn_starry_epoch10.jpeg" style="height: 20vw;">
+        <img src="proj1/images/marilyn_starry/marilyn_starry_epoch11.jpeg" style="height: 20vw;">
+        <img src="proj1/images/marilyn_starry/marilyn_starry_epoch12.jpeg" style="height: 20vw;">
+        <img src="proj1/images/marilyn_starry/marilyn_starry_epoch13.jpeg" style="height: 20vw;">
+        <img src="proj1/images/marilyn_starry/marilyn_starry_epoch14.jpeg" style="height: 20vw;">
+        <img src="proj1/images/marilyn_starry/marilyn_starry_epoch15.jpeg" style="height: 20vw;">
+        <img src="proj1/images/marilyn_starry/marilyn_starry_epoch16.jpeg" style="height: 20vw;">
+        <img src="proj1/images/marilyn_starry/marilyn_starry_epoch17.jpeg" style="height: 20vw;">
+        <img src="proj1/images/marilyn_starry/marilyn_starry_epoch18.jpeg" style="height: 20vw;">
+        <img src="proj1/images/marilyn_starry/marilyn_starry_epoch19.jpeg" style="height: 20vw;">
+    </div>
+
+    <h4>Final Result</h4>
+    <img src="proj1/images/marilyn_starry/marilyn_starry_epoch19.jpeg" style="width: 40vw">
+
 
 
     <hr>
@@ -309,6 +381,7 @@
     <p>alpha = 0.1</p>
     <p>tol = 1</p>
     <img src="proj2/images/method4/marilyn_starry_blend.jpeg" style="height: 40vh;">
+
 </body>
 
 </html>
