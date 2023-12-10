@@ -71,7 +71,8 @@
         loss.</p>
 
     <p>Additionally, I used an Adam optimizer. The paper suggests setting the ratio between the style weight and content
-        weight to \(10^{-3}\) for optimal results. <br>My final outputs used a smaller ratio of \(10^{-5}\) (style_weight = \(10^{-2}\), content_weight = \(10^{3}\)) </p>
+        weight to \(10^{-3}\) for optimal results. <br>My final outputs used a smaller ratio of \(10^{-5}\)
+        (style_weight = \(10^{-2}\), content_weight = \(10^{3}\)) </p>
 
     <h2>Initial failed attempts</h2>
     <p>Here are some initial failed training attempts</p>
@@ -338,11 +339,11 @@
         <img src="proj2/images/method4/feynman_blur.jpeg" style="height: 40vh;">
         <img src="proj2/images/method4/white_small_blur.jpeg" style="height: 40vh;">
     </div>
-    <p><b>Output: Yogurt texture transfered to Feynman<b></p>
-    <p>patch_size = 20</p>
-    <p>overlap = 2</p>
-    <p>alpha = 0.1</p>
-    <p>tol = 1</p>
+    <p><b>Output: Yogurt texture transfered to Feynman</b></p>
+    <p>patch_size = 20<br>
+        overlap = 2<br>
+        alpha = 0.1<br>
+        tol = 1</p>
     <img src="proj2/images/method4/white_small_feynman.jpeg" style="height: 40vh;">
 
     <h3>Guidance Image (left): feynman.tiff -- Texture Image (right): sketch.tiff</h3>
@@ -356,11 +357,12 @@
         <img src="proj2/images/method4/feynman_blur.jpeg" style="height: 40vh;">
         <img src="proj2/images/method4/sketch_blur.jpeg" style="height: 40vh;">
     </div>
-    <p><b>Output: Sketch texture transfered to Feynman<b></p>
-    <p>patch_size = 15</p>
-    <p>overlap = 4</p>
-    <p>alpha = 0.1</p>
-    <p>tol = 1</p>
+    <p><b>Output: Sketch texture transfered to Feynman</b></p>
+    <p>patch_size = 15<br>
+        overlap = 4<br>
+        alpha = 0.1<br>
+        tol = 1</p>
+
     <img src="proj2/images/method4/feynman_sketch_transfer.jpeg" style="height: 40vh;">
 
     <br>
@@ -375,13 +377,81 @@
         <img src="proj2/images/method4/marilyn_monroe_grey.jpeg" style="height: 40vh;">
         <img src="proj2/images/method4/starry_night_grey.jpeg" style="height: 40vh;">
     </div>
-    <p><b>Output: Starry Night texture transfered to Marilyn Monroe<b></p>
+    <p><b>Output: Starry Night texture transfered to Marilyn Monroe</b></p>
     <p>patch_size = 30</p>
     <p>overlap = 6</p>
     <p>alpha = 0.1</p>
     <p>tol = 1</p>
     <img src="proj2/images/method4/marilyn_starry_blend.jpeg" style="height: 40vh;">
 
+    <br>
+    <h2>Bells and Whistles</h2>
+    <p>For the iterative technique, I use a decreasing patch_size and increasing alpha:</p>
+    <p> $$alpha = 0.1 + 0.8 * i / (n - 1)$$
+        $$patch\_size = patch\_size * 2^i // 3^i $$</p>
+    <p>Each iteration, I feed the previous image with larger patches into the next transfer method.</p>
+    <h3>Guidance Image (left): feynman.jpeg -- Texture Image (right): white_small.jpeg</h3>
+
+    <p>num_iterations = 3</p>
+    <p>patch_size = 50</p>
+
+    <div style="flex-direction: row;">
+        <img src="proj2/images/method4/feynman_orig.jpeg" style="height: 40vh;">
+        <img src="proj2/images/method4/white_small.jpeg" style="height: 40vh;">
+    </div>
+    <p><b>Output:</b></p>
+    <p>alpha = 0.3</p>
+    <p>patch_size = 33</p>
+    <img src="proj2/images/bells_whistle_1/feynman_white/iter0.3_33.png" style="height: 40vh;">
+
+    <p>alpha = 0.5</p>
+    <p>patch_size = 14</p>
+    <img src="proj2/images/bells_whistle_1/feynman_white/iter_0.5_14.png" style="height: 40vh;">
+
+    <p>alpha = 0.7</p>
+    <p>patch_size = 4</p>
+    <img src="proj2/images/bells_whistle_1/feynman_white/iter_0.7_4.png" style="height: 40vh;">
+
+
+
+    <p><b>Side by Side Comparison (left original, middle iterative, right non-iterative)</b></p>
+    <p>The middle iterative method seems to capture general shapes and edges more accurately.</p>
+    <div style="flex-direction: row;">
+        <img src="proj2/images/method4/feynman_orig.jpeg" style="height: 40vh;">
+        <img src="proj2/images/bells_whistle_1/feynman_white/iter_0.7_4.png" style="height: 40vh;">
+        <img src="proj2/images/method4/white_small_feynman.jpeg" style="height: 40vh;">
+    </div>
+
+    <h3>Guidance Image (left): monroe.jpeg -- Texture Image (right): starry_night.jpeg</h3>
+
+    <p>num_iterations = 3</p>
+    <p>patch_size = 50</p>
+
+    <div style="flex-direction: row;">
+        <img src="proj2/images/method4/marilyn_orig.jpeg" style="height: 40vh;">
+        <img src="proj2/images/method4/starry_night_orig.jpeg" style="height: 40vh;">
+    </div>
+    <p><b>Output:</b></p>
+    <p>alpha = 0.3</p>
+    <p>patch_size = 33</p>
+    <img src="proj2/images/bells_whistle_1/monroe_starry/iter0.3_33.png" style="height: 40vh;">
+
+    <p>alpha = 0.5</p>
+    <p>patch_size = 14</p>
+    <img src="proj2/images/bells_whistle_1/monroe_starry/iter_0.5_14.png" style="height: 40vh;">
+
+    <!-- <p>alpha = 0.7</p>
+    <p>patch_size = 4</p>
+    <img src="proj2/images/bells_whistle_1/monroe_starry/iter_0.7_4.png" style="height: 40vh;">
+ -->
+
+
+    <p><b>Side by Side Comparison (left original, middle iterative, right non-iterative)</b></p>
+    <div style="flex-direction: row;">
+        <img src="proj2/images/method4/marilyn_orig.jpeg" style="height: 40vh;">
+        <img src="proj2/images/bells_whistle_1/monroe_starry/" style="height: 40vh;">
+        <img src="proj2/images/method4/marilyn_starry_blend.jpeg" style="height: 40vh;">
+    </div>
 </body>
 
 </html>
